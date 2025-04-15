@@ -3,10 +3,10 @@
 
     <!-- Sidebar Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('user'); ?>">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-medal fa-2x text-white"></i>
+        <div class="sidebar-brand-icon">
+            <i class="bi bi-award-fill"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Prestasi Rekognisi</div>
+        <div class="sidebar-brand-text">Prestasi Rekognisi</div>
     </a>
 
     <hr class="sidebar-divider">
@@ -63,7 +63,7 @@
         <!-- Logout -->
         <li class="nav-item">
             <a class="nav-link" href="<?= base_url('auth/logout'); ?>">
-                <i class="fa-solid fa-fw fa-right-from-bracket"></i>
+                <i class="bi bi-box-arrow-right"></i>
                 <span>Logout</span>
             </a>
         </li>

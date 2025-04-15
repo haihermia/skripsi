@@ -67,8 +67,6 @@
 
 </div>
 <!-- /.container-fluid -->
-</div>
-<!-- End of Main Content -->
 
 <!-- Modal Tambah Data -->
 <div class="modal fade" id="tambahRekognisiModal" tabindex="-1" aria-labelledby="tambahRekognisiLabel" aria-hidden="true">

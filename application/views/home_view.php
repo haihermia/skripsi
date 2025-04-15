@@ -8,9 +8,17 @@
     <meta name="author" content="" />
     <title>Prestasi & Rekognisi Mahasiswa</title>
     <link rel="icon" type="image/x-icon" href="<?= base_url('assets/favicon.ico') ?>" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="..." crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Local CSS -->
     <link href="<?= base_url('assets/css/styles.css') ?>" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -65,21 +73,21 @@
 
     <section class="showcase">
         <div class="container-fluid p-0">
-            <div class="row g-0">
+            <div class="row g-0 bg-light">
                 <div class="col-lg-6 order-lg-2 showcase-img" style="background-image: url('<?= base_url('assets/img/platform.png') ?>');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
                     <h2>Platform Terintegrasi</h2>
                     <p class="lead mb-0">Seluruh data prestasi mahasiswa terhubung dengan sistem akademik universitas.</p>
                 </div>
             </div>
-            <div class="row g-0">
+            <div class="row g-0 bg-light">
                 <div class="col-lg-6 showcase-img" style="background-image: url('<?= base_url('assets/img/validasi.png') ?>');"></div>
                 <div class="col-lg-6 my-auto showcase-text">
                     <h2>Validasi Prestasi & Rekognisi</h2>
                     <p class="lead mb-0">Prestasi mahasiswa yang telah tervalidasi akan terdokumentasi dan berkontribusi pada rekam jejak akademik mereka.</p>
                 </div>
             </div>
-            <div class="row g-0">
+            <div class="row g-0 bg-light">
                 <div class="col-lg-6 order-lg-2 showcase-img" style="background-image: url('<?= base_url('assets/img/analisis.png') ?>');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text">
                     <h2>Analisis Perkembangan</h2>
@@ -95,7 +103,9 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
+
     <script src="<?= base_url('assets/js/scripts.js') ?>"></script>
 </body>
 

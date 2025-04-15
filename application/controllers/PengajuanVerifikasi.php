@@ -13,6 +13,7 @@ class PengajuanVerifikasi extends CI_Controller
     public function index()
     {
         $data['title'] = 'Pengajuan Verifikasi';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['pengajuan'] = $this->PengajuanVerifikasi_model->get_all_pengajuan();
 
         $this->load->view('templates/header', $data);
@@ -190,6 +191,7 @@ class PengajuanVerifikasi extends CI_Controller
     public function pengajuanku()
     {
         $data['title'] = 'Pengajuan Verifikasi';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $id_mahasiswa = $this->session->userdata('id_user');
         $data['pengajuan'] = $this->PengajuanVerifikasi_model->getAllPengajuanbyidmahasiswa($id_mahasiswa);
 

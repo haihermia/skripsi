@@ -68,8 +68,6 @@
 
 </div>
 <!-- /.container-fluid -->
-</div>
-<!-- End of Main Content -->
 
 <!-- Modal Tambah Data -->
 <div class="modal fade" id="tambahPrestasiModal" tabindex="-1" aria-labelledby="tambahPrestasiLabel" aria-hidden="true">
