@@ -8,6 +8,7 @@ class Prestasi extends CI_Controller
         $this->load->model('Prestasi_model');
         $this->load->library('form_validation'); // 🔹 Load form validationt
         $this->load->helper('url'); // 🔹 Tambahkan jika perlu
+        $this->load->library('upload');
         // is_logged_in();
     }
     public function index()
@@ -18,6 +19,11 @@ class Prestasi extends CI_Controller
         $data['user'] = $this->db->get_where('user', [
             'email' => $this->session->userdata('email')
         ])->row_array();
+
+        $data['mahasiswa'] = $this->db->get_where('mahasiswa', [
+            'id_user' => $data['user']['id']
+        ])->row_array();
+
 
         // Ambil data prestasi dari model
         $data['prestasi'] = $this->Prestasi_model->getAllPrestasi();
@@ -31,58 +37,74 @@ class Prestasi extends CI_Controller
     }
 
     public function tambah()
-    {
-        $this->form_validation->set_rules('nim', 'NIM', 'required');
-        $this->form_validation->set_rules('nama_prestasi', 'Nama Prestasi', 'required');
+	{
 
-        //konfigurasi upload gambar
-        $config['upload_path'] = './uploads/bukti/';
-        $config['allowed_types'] = 'jpg|jpeg|png|wepb|JPG|PNG|JPEG|WEPB';
-        $config['max_size'] = '6000';
+		// Konfigurasi upload file
+		$config['upload_path'] = './assets/static/uploads/bukti/';
+		$config['allowed_types'] = 'jpg|jpeg|png|wepb|pdf|JPG|PNG|JPEG|WEPB|PDF';
+		$config['max_size'] = 6000; // KB
+		$config['file_name'] = time();
+
+		$this->load->library('upload', $config);
+
+		$bukti = null; // default value bukti
+
+		if ($this->upload->do_upload('bukti')) {
+			$bukti_data = $this->upload->data();
+			$bukti = $bukti_data['file_name'];
+		}
+
+		$data = array(
+            'nim' => $this->input->post('nim'),
+            'nama_prestasi' => $this->input->post('nama_prestasi'),
+            'bidang_prestasi' => $this->input->post('bidang_prestasi'),
+            'nama_kegiatan' => $this->input->post('nama_kegiatan'),
+            'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
+            'komponen_prestasi' => $this->input->post('komponen_prestasi'),
+            'penyelenggara' => $this->input->post('penyelenggara'),
+            'bukti' => $bukti,
+            'status' => 'diajukan',
+            'id_mahasiswa' => $this->session->userdata('id_user')
+		);
+        $this->Prestasi_model->tambahPrestasi($data);
+        $this->session->set_flashdata('message', '<div class="alert alert-success">Data berhasil ditambahkan!</div>');
+        redirect('prestasi');
+	}
+
+    public function save()
+    {
+        // Konfigurasi upload gambar
+        $upload_path = FCPATH . 'assets/static/uploads/bukti/';
+
+        // Pastikan folder ada dan writable
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0755, true); // Buat folder jika belum ada
+        }
+
+        // Konfigurasi upload file
+        $config['upload_path'] = './assets/static/uploads/bukti/';
+        $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf|JPG|PNG|JPEG|WEBP|PDF';
+        $config['max_size'] = 6000; // KB
         $config['file_name'] = time();
 
         $this->load->library('upload', $config);
 
-        $bukti = NULL;
+        $bukti = null; // default value bukti
 
         if ($this->upload->do_upload('bukti')) {
             $bukti_data = $this->upload->data();
             $bukti = $bukti_data['file_name'];
-        } else {
-            echo $this->upload->display_errors();
-            $bukti = '';
         }
-
-        if (!$this->upload->do_upload('bukti')) {
-            echo "<pre>";
-            print_r($this->upload->display_errors());
-            echo "</pre>";
-            exit; // Hentikan eksekusi untuk melihat error
-        }
-
-        $data['title'] = 'Tambah Data Prestasi';
-        $data['komponen_prestasi'] = [
-            'Juara Umum',
-            'Juara 1 (Nasional)',
-            'Juara 2 (Nasional)',
-            'Juara 3 (Nasional)',
-            'Juara Harapan 1 (Nasional)',
-            'Juara Harapan 2 (Nasional)',
-            'Juara Harapan 3 (Nasional)'
-        ];
+        // Validasi form
+        $this->form_validation->set_rules('nim', 'NIM', 'required');
+        $this->form_validation->set_rules('nama_prestasi', 'Nama Prestasi', 'required');
 
         if ($this->form_validation->run() == FALSE) {
-            $data['title'] = 'Tambah Data Prestasi';
-
-            // Pastikan view form tambah tetap memuat header, sidebar, dan topbar
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('prestasi/tambah', $data);
-            $this->load->view('templates/footer');
+            $error = $this->upload->display_errors();
+            log_message('error', 'Upload Error: ' . $error);
+            $this->session->set_flashdata('message', '<div class="alert alert-danger">' . $error . '</div>');
+            redirect('prestasi');
         } else {
-
-
             $data = [
                 'nim' => $this->input->post('nim'),
                 'nama_prestasi' => $this->input->post('nama_prestasi'),
@@ -92,15 +114,15 @@ class Prestasi extends CI_Controller
                 'komponen_prestasi' => $this->input->post('komponen_prestasi'),
                 'penyelenggara' => $this->input->post('penyelenggara'),
                 'bukti' => $bukti,
+                'status' => 'diajukan',
                 'id_mahasiswa' => $this->session->userdata('id_user')
             ];
 
             $this->Prestasi_model->tambahPrestasi($data);
             $this->session->set_flashdata('message', '<div class="alert alert-success">Data berhasil ditambahkan!</div>');
-            redirect('prestasi/getprestasibyidmahasiswa'); // Redirect ke index agar layout tetap muncul
+            redirect('prestasi');
         }
     }
-
     public function editPrestasi($id)
     {
         $data['title'] = 'Edit Prestasi';

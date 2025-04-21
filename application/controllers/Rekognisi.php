@@ -19,6 +19,11 @@ class Rekognisi extends CI_Controller
             'email' => $this->session->userdata('email')
         ])->row_array();
 
+        $data['mahasiswa'] = $this->db->get_where('mahasiswa', [
+            'id_user' => $data['user']['id']
+        ])->row_array();
+
+
         // Ambil data rekognisi dari model
         $data['rekognisi'] = $this->Rekognisi_model->getAllRekognisi();
 
@@ -120,7 +125,7 @@ class Rekognisi extends CI_Controller
             'MSIB (Magang)',
             'PMM (Pertukaran Mahasiswa Merdeka)',
             'Membangun Desa / KKN-T',
-             'HKI',
+            'HKI',
             'Publikasi Jurnal Sinta'
         ];
 

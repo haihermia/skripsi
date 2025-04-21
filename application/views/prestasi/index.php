@@ -6,6 +6,13 @@
 
     <!-- Notifikasi (jika ada) -->
     <?= $this->session->flashdata('message'); ?>
+            
+            <!-- Menampilkan error validasi form -->
+            <?php if(validation_errors()): ?>
+                <div class="alert alert-danger">
+                    <?= validation_errors(); ?>
+                </div>
+            <?php endif; ?>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -79,11 +86,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('prestasi/tambah'); ?>" method="POST" enctype="multipart/form-data">
+            <form action="<?= site_url('prestasi/tambah'); ?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nim">NIM</label>
-                        <input type="number" class="form-control" id="nim" name="nim" required disabled value="<?= $mahasiswa['nim']?>">
+                        <input type="number" class="form-control" id="nim" name="nim" required readonly value="<?= $mahasiswa['nim']?>">
                     </div>
                     <div class="form-group">
                         <label for="nama_prestasi">Nama Prestasi</label>
@@ -99,7 +106,7 @@
                     </div>
                     <div class="form-group">
                         <label for="tanggal_kegiatan">Tanggal Kegiatan</label>
-                        <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" required>
+                        <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" value="<?= date('Y-m-d')?>" required>
                     </div>
                     <div class="form-group">
                         <label for="komponen_prestasi">Komponen Prestasi</label>

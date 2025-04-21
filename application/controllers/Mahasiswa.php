@@ -14,6 +14,8 @@ class Mahasiswa extends CI_Controller
     {
         $data['title'] = 'Data Mahasiswa';
         $data['mahasiswa'] = $this->Mahasiswa_model->get_all_mahasiswa();
+        // var_dump($data['user']);
+        // die();
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
@@ -27,8 +29,9 @@ class Mahasiswa extends CI_Controller
         $data['title'] = 'Daftar User Mahasiswa';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['mahasiswa'] = $this->Mahasiswa_model->get_all_user_mahasiswa();
-        // var_dump($data['user']);
+        // var_dump($data['mahasiswa']);
         // die();
+
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
