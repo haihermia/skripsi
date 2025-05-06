@@ -42,6 +42,7 @@ class Prestasi extends CI_Controller
         $config['file_name'] = time();
 
         $this->load->library('upload', $config);
+		$this->upload->initialize($config);
 
         $bukti = NULL;
 
