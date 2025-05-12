@@ -82,7 +82,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nim">NIM</label>
-                        <input type="number" class="form-control" id="nim" name="nim" required readonly value="213100200">
+                        <input type="number" class="form-control" id="nim" name="nim" required disabled value="<?= $mahasiswa['nim']?>">
                     </div>
                     <div class="form-group">
                         <label for="nama_rekognisi">Nama Rekognisi</label>

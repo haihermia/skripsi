@@ -90,11 +90,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nim">NIM</label>
-<<<<<<< HEAD
                         <input type="number" class="form-control" id="nim" name="nim" required readonly value="<?= $mahasiswa['nim']?>">
-=======
-                        <input type="number" class="form-control" id="nim" name="nim" required readonly value="213100200">
->>>>>>> 54d33ecc6d3e17c73b4ff6b698da1a49bfab660b
                     </div>
                     <div class="form-group">
                         <label for="nama_prestasi">Nama Prestasi</label>
