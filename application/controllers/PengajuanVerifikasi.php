@@ -81,6 +81,7 @@ class PengajuanVerifikasi extends CI_Controller
 
     public function edit($id)
     {
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['title'] = "Edit Pengajuan Verifikasi";
         $data['pengajuan'] = $this->PengajuanVerifikasi_model->get_pengajuan_by_id($id);
 

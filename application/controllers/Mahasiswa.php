@@ -87,6 +87,7 @@ class Mahasiswa extends CI_Controller
 
     public function edit($id)
     {
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['title'] = "Edit Mahasiswa";
         $data['mahasiswa'] = $this->Mahasiswa_model->get_mahasiswa_by_id($id);
 
