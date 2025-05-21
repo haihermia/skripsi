@@ -6,13 +6,13 @@
 
     <!-- Notifikasi (jika ada) -->
     <?= $this->session->flashdata('message'); ?>
-            
-            <!-- Menampilkan error validasi form -->
-            <?php if(validation_errors()): ?>
-                <div class="alert alert-danger">
-                    <?= validation_errors(); ?>
-                </div>
-            <?php endif; ?>
+
+    <!-- Menampilkan error validasi form -->
+    <?php if (validation_errors()): ?>
+        <div class="alert alert-danger">
+            <?= validation_errors(); ?>
+        </div>
+    <?php endif; ?>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -90,7 +90,10 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nim">NIM</label>
-                        <input type="number" class="form-control" id="nim" name="nim" required disabled value="<?= $mahasiswa['nim'] ?>">
+                        <!-- Tampilkan sebagai readonly agar tetap terlihat -->
+                        <input type="number" class="form-control" id="nim_display" value="<?= $mahasiswa['nim'] ?>" readonly>
+                        <!-- Hidden input untuk dikirimkan ke controller -->
+                        <input type="hidden" name="nim" value="<?= $mahasiswa['nim'] ?>">
                     </div>
                     <div class="form-group">
                         <label for="nama_prestasi">Nama Prestasi</label>

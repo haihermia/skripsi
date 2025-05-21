@@ -32,6 +32,10 @@ class Prestasi extends CI_Controller
 
     public function tambah()
     {
+        $data['user'] = $this->db->get_where('user', [
+            'email' => $this->session->userdata('email')
+        ])->row_array();
+
         $this->form_validation->set_rules('nim', 'NIM', 'required');
         $this->form_validation->set_rules('nama_prestasi', 'Nama Prestasi', 'required');
 
