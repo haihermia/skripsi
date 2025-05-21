@@ -32,53 +32,64 @@ class Prestasi extends CI_Controller
 
     public function tambah()
     {
-        $data['user'] = $this->db->get_where('user', [
-            'email' => $this->session->userdata('email')
-        ])->row_array();
+        $data['user'] = $this->db->get_where('user', ['email' =>
+        $this->session->userdata('email')])->row_array();
 
-        $this->form_validation->set_rules('nim', 'NIM', 'required');
-        $this->form_validation->set_rules('nama_prestasi', 'Nama Prestasi', 'required');
+        // Ambil data dari form
+        $nim = $this->input->post('nim', true);
+        $nama_prestasi = $this->input->post('nama_prestasi', true);
+        $bidang_prestasi = $this->input->post('bidang_prestasi', true);
+        $nama_kegiatan = $this->input->post('nama_kegiatan', true);
+        $tanggal_kegiatan = $this->input->post('tanggal_kegiatan', true);
+        $komponen_prestasi = $this->input->post('komponen_prestasi', true);
+        $penyelenggara = $this->input->post('penyelenggara', true);
 
-        $config['upload_path'] = './uploads/bukti/';
-        $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf';
-        $config['max_size'] = 6000;
-        $config['file_name'] = time();
+        // Cari id_mahasiswa berdasarkan NIM
+        $mahasiswa = $this->db->get_where('mahasiswa', ['nim' => $nim])->row_array();
+        if (!$mahasiswa) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger">Mahasiswa dengan NIM tersebut tidak ditemukan!</div>');
+            redirect('prestasi');
+            return;
+        }
+        $id_mahasiswa = $mahasiswa['id'];
 
-        $this->upload->initialize($config);
-        $bukti = '';
+        // Upload bukti
+        $bukti = $_FILES['bukti']['name'];
+        if ($bukti) {
+            $config['allowed_types'] = 'jpg|png|jpeg|pdf';
+            $config['max_size'] = 2048;
+            $config['upload_path'] = './uploads/bukti/';
+            $this->load->library('upload', $config);
 
-        if ($this->upload->do_upload('bukti')) {
-            $bukti_data = $this->upload->data();
-            $bukti = $bukti_data['file_name'];
+            if ($this->upload->do_upload('bukti')) {
+                $bukti = $this->upload->data('file_name');
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger">' . $this->upload->display_errors() . '</div>');
+                redirect('prestasi');
+                return;
+            }
         }
 
-        if ($this->form_validation->run() == FALSE) {
-            $data['title'] = 'Tambah Data Prestasi';
-            $data['komponen_prestasi'] = ['Juara Umum', 'Juara 1 (Nasional)', 'Juara 2 (Nasional)', 'Juara 3 (Nasional)', 'Juara Harapan 1 (Nasional)', 'Juara Harapan 2 (Nasional)', 'Juara Harapan 3 (Nasional)'];
+        // Simpan ke database
+        $data = [
+            'nim' => $nim,
+            'nama_prestasi' => $nama_prestasi,
+            'bidang_prestasi' => $bidang_prestasi,
+            'nama_kegiatan' => $nama_kegiatan,
+            'tanggal_kegiatan' => $tanggal_kegiatan,
+            'komponen_prestasi' => $komponen_prestasi,
+            'penyelenggara' => $penyelenggara,
+            'bukti' => $bukti,
+            'id_mahasiswa' => $id_mahasiswa
+        ];
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar', $data);
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('prestasi/tambah', $data);
-            $this->load->view('templates/footer');
-        } else {
-            $data = [
-                'nim' => $this->input->post('nim'),
-                'nama_prestasi' => $this->input->post('nama_prestasi'),
-                'bidang_prestasi' => $this->input->post('bidang_prestasi'),
-                'nama_kegiatan' => $this->input->post('nama_kegiatan'),
-                'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
-                'komponen_prestasi' => $this->input->post('komponen_prestasi'),
-                'penyelenggara' => $this->input->post('penyelenggara'),
-                'bukti' => $bukti,
-                'id_mahasiswa' => $this->session->userdata('id_user')
-            ];
+        $this->db->insert('prestasi', $data);
 
-            $this->Prestasi_model->tambahPrestasi($data);
-            $this->session->set_flashdata('message', '<div class="alert alert-success">Data berhasil ditambahkan!</div>');
-            redirect('prestasi/getprestasibyidmahasiswa');
-        }
+        $this->session->set_flashdata('message', '<div class="alert alert-success">Data prestasi berhasil ditambahkan!</div>');
+        redirect('prestasi');
     }
+
+
 
     public function editPrestasi($id)
     {
@@ -137,7 +148,13 @@ class Prestasi extends CI_Controller
             $this->db->update('prestasi', $updateData);
 
             $this->session->set_flashdata('message', '<div class="alert alert-success">Data prestasi berhasil diubah!</div>');
-            redirect('prestasi');
+
+            // Redirect sesuai role
+            if ($data['user']['role_id'] == 2) {
+                redirect('prestasi/getprestasibyidmahasiswa');
+            } else {
+                redirect('prestasi');
+            }
         }
     }
 
@@ -161,17 +178,24 @@ class Prestasi extends CI_Controller
     public function getprestasibyidmahasiswa()
     {
         $data['title'] = 'Data Prestasi';
-        $id_mahasiswa = $this->session->userdata('id_user');
 
+        // Ambil data user yang login
         $data['user'] = $this->db->get_where('user', [
             'email' => $this->session->userdata('email')
         ])->row_array();
+
+        // Ambil data mahasiswa berdasarkan id_user
         $data['mahasiswa'] = $this->db->get_where('mahasiswa', [
             'id_user' => $data['user']['id']
         ])->row_array();
 
+        // Ambil ID mahasiswa dari tabel mahasiswa
+        $id_mahasiswa = $data['mahasiswa']['id'];
+
+        // Ambil semua prestasi berdasarkan id_mahasiswa
         $data['prestasi'] = $this->Prestasi_model->getAllPrestasibyidmahasiswa($id_mahasiswa);
 
+        // Load view
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
         $this->load->view('templates/topbar', $data);
