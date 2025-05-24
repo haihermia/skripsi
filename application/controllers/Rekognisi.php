@@ -37,7 +37,7 @@ class Rekognisi extends CI_Controller
 
 		// Ambil role user
 		$role_id = $this->session->userdata('role_id');
-		$redirect_target = ($role_id == 3) ? 'rekognisi/getrekognisibyidmahasiswa' : 'rekognisi/index'; // anggap role_id 3 = mahasiswa
+		$redirect_target = ($role_id == 2) ? 'rekognisi/getrekognisibyidmahasiswa' : 'rekognisi/index';
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->session->set_flashdata('message', '<div class="alert alert-danger">Gagal menambahkan data. Periksa isian Anda.</div>');
@@ -144,17 +144,27 @@ class Rekognisi extends CI_Controller
 			$this->db->update('rekognisi', $updateData);
 
 			$this->session->set_flashdata('message', '<div class="alert alert-success">Data rekognisi berhasil diubah!</div>');
-			redirect('rekognisi');
+
+			// 🔁 Redirect berdasarkan role
+			$role_id = $this->session->userdata('role_id');
+			$redirect_target = ($role_id == 2) ? 'rekognisi/getrekognisibyidmahasiswa' : 'rekognisi/index';
+			redirect($redirect_target);
 		}
 	}
+
 
 
 	public function hapusRekognisi($id)
 	{
 		$this->Rekognisi_model->hapusRekognisiById($id);
 		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data rekognisi berhasil dihapus!</div>');
-		redirect('rekognisi');
+
+		// 🔁 Redirect berdasarkan role
+		$role_id = $this->session->userdata('role_id');
+		$redirect_target = ($role_id == 2) ? 'rekognisi/getrekognisibyidmahasiswa' : 'rekognisi/index';
+		redirect($redirect_target);
 	}
+
 
 
 	public function getrekognisibyidmahasiswa()

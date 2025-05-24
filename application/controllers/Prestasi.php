@@ -35,6 +35,10 @@ class Prestasi extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['email' =>
         $this->session->userdata('email')])->row_array();
 
+        // Ambil role user
+        $role_id = $this->session->userdata('role_id');
+        $redirect_target = ($role_id == 2) ? 'prestasi/getprestasibyidmahasiswa' : 'prestasi/index';
+
         // Ambil data dari form
         $nim = $this->input->post('nim', true);
         $nama_prestasi = $this->input->post('nama_prestasi', true);
@@ -48,24 +52,27 @@ class Prestasi extends CI_Controller
         $mahasiswa = $this->db->get_where('mahasiswa', ['nim' => $nim])->row_array();
         if (!$mahasiswa) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger">Mahasiswa dengan NIM tersebut tidak ditemukan!</div>');
-            redirect('prestasi');
+            redirect($redirect_target);
             return;
         }
         $id_mahasiswa = $mahasiswa['id'];
 
         // Upload bukti
-        $bukti = $_FILES['bukti']['name'];
-        if ($bukti) {
-            $config['allowed_types'] = 'jpg|png|jpeg|pdf';
-            $config['max_size'] = 2048;
-            $config['upload_path'] = './uploads/bukti/';
-            $this->load->library('upload', $config);
+        $config['upload_path'] = './uploads/bukti/';
+        $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf';
+        $config['max_size'] = 6000;
+        $config['file_name'] = time();
 
+        $this->upload->initialize($config);
+        $bukti = '';
+
+        if (!empty($_FILES['bukti']['name'])) {
             if ($this->upload->do_upload('bukti')) {
-                $bukti = $this->upload->data('file_name');
+                $upload_data = $this->upload->data();
+                $bukti = $upload_data['file_name'];
             } else {
                 $this->session->set_flashdata('message', '<div class="alert alert-danger">' . $this->upload->display_errors() . '</div>');
-                redirect('prestasi');
+                redirect($redirect_target);
                 return;
             }
         }
@@ -86,7 +93,7 @@ class Prestasi extends CI_Controller
         $this->db->insert('prestasi', $data);
 
         $this->session->set_flashdata('message', '<div class="alert alert-success">Data prestasi berhasil ditambahkan!</div>');
-        redirect('prestasi');
+        redirect($redirect_target);
     }
 
 
@@ -161,9 +168,16 @@ class Prestasi extends CI_Controller
     public function hapusPrestasi($id)
     {
         $this->Prestasi_model->hapusPrestasiById($id);
+
         $this->session->set_flashdata('message', '<div class="alert alert-success">Data prestasi berhasil dihapus!</div>');
-        redirect('prestasi');
+
+        // Cek role dan arahkan sesuai
+        $role_id = $this->session->userdata('role_id');
+        $redirect_target = ($role_id == 2) ? 'prestasi/getprestasibyidmahasiswa' : 'prestasi/index';
+
+        redirect($redirect_target);
     }
+
 
     public function bukti($id)
     {
