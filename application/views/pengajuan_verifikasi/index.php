@@ -40,13 +40,19 @@
                             <?php foreach ($pengajuan as $p) : ?>
                                 <tr>
                                     <td><?= $no++; ?></td>
-                                    <td><?= $p['nama']; ?></td>
-                                    <td><?= $p['email']; ?></td>
-                                    <td><?= $p['jenis_pengajuan']; ?></td>
-                                    <td><a href="<?= base_url() . 'uploads/bukti/' . $p['dokumen']; ?>">Lihat</a></td>
+                                    <td><?= $p['nama_prestasi']; ?></td>
+                                    <td><?= $p['nim']; ?></td>
                                     <td>
-                                        <?php if ($p['status'] == 'pending'): ?>
-                                            <span class="badge badge-warning">Pending</span>
+                                        <?php if ($p['jenis'] == 'prestasi'): ?>
+                                            <span class="badge badge-primary">Prestasi</span>
+                                        <?php elseif ($p['jenis'] == 'rekognisi'): ?>
+                                            <span class="badge badge-success">Rekognisi</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><a href="<?= base_url() . 'uploads/bukti/' . $p['bukti']; ?>">Lihat</a></td>
+                                    <td>
+                                        <?php if ($p['status'] == 'diajukan'): ?>
+                                            <span class="badge badge-warning">Diajukan</span>
                                         <?php elseif ($p['status'] == 'diterima'): ?>
                                             <span class="badge badge-success">Diterima</span>
                                         <?php elseif ($p['status'] == 'ditolak'): ?>
@@ -55,7 +61,7 @@
                                             <span class="badge badge-secondary"><?= $p['status']; ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?= $p['tanggal_pengajuan']; ?></td>
+                                    <td><?= $p['tanggal']; ?></td>
                                     <td>
                                         <?php if (!empty($p['catatan'])): ?>
                                             <?= $p['catatan']; ?>
@@ -75,22 +81,22 @@
                                         <div class="btn-group">
                                             <?php if ($p['status'] == 'diterima' || $p['status'] == 'ditolak'): ?>
                                                 <button class="btn btn-sm btn-primary"
-                                                    <?= ($p['status'] == 'pending') ? '' : 'disabled'; ?>>
+                                                    <?= ($p['status'] == 'diajukan') ? '' : 'disabled'; ?>>
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
-                                            <?php elseif ($p['status'] == 'pending'): ?>
-                                                <a href="<?= base_url('pengajuanverifikasi/edit/') . $p['id']; ?>" class="btn btn-sm btn-primary" <?= ($p['status'] == 'pending') ? '' : 'disabled'; ?>>
+                                            <?php elseif ($p['status'] == 'diajukan'): ?>
+                                                <a href="<?= base_url('prestasi/verifikasiPengajuan/') . $p['id']; ?>" class="btn btn-sm btn-primary" <?= ($p['status'] == 'pending') ? '' : 'disabled'; ?>>
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
                                             <?php endif ?>
 
                                             <?php if ($p['status'] == 'diterima' || $p['status'] == 'ditolak'): ?>
                                                 <button class="btn btn-sm btn-danger"
-                                                    <?= ($p['status'] == 'pending') ? '' : 'disabled'; ?>>
+                                                    <?= ($p['status'] == 'diajukan') ? '' : 'disabled'; ?>>
                                                     <i class="fas fa-trash"></i> Hapus
                                                 </button>
 
-                                            <?php elseif ($p['status'] == 'pending'): ?>
+                                            <?php elseif ($p['status'] == 'diajukan'): ?>
                                                 <a href="<?= base_url('pengajuanverifikasi/hapus/') . $p['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?');">
                                                     <i class="fas fa-trash"></i> Hapus
                                                 </a>

@@ -10,13 +10,13 @@
 
                 <div class="form-group">
                     <label for="nama_rekognisi">Nama Rekognisi</label>
-                    <input type="text" class="form-control" id="nama_rekognisi" name="nama_rekognisi" value="<?= $rekognisi['nama_rekognisi']; ?>">
+                    <input type="text" class="form-control" id="nama_rekognisi" name="nama_rekognisi" value="<?= $rekognisi['nama_prestasi']; ?>">
                     <?= form_error('nama_rekognisi', '<small class="text-danger">', '</small>'); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="bidang_rekognisi">Bidang Rekognisi</label>
-                    <input type="text" class="form-control" id="bidang_rekognisi" name="bidang_rekognisi" value="<?= $rekognisi['bidang_rekognisi']; ?>">
+                    <input type="text" class="form-control" id="bidang_rekognisi" name="bidang_rekognisi" value="<?= $rekognisi['bidang_prestasi']; ?>">
                     <?= form_error('bidang_rekognisi', '<small class="text-danger">', '</small>'); ?>
                 </div>
 
@@ -34,15 +34,15 @@
                     <label for="komponen_rekognisi">Komponen Rekognisi</label>
                     <select class="form-control" id="komponen_rekognisi" name="komponen_rekognisi" required>
                         <option value="">-- Pilih Komponen Rekognisi --</option>
-                        <option value="pemakalah/speaker seminar" <?= ($rekognisi['komponen_rekognisi'] == 'pemakalah/speaker seminar') ? 'selected' : ''; ?>>Pemakalah/Speaker Seminar</option>
-                        <option value="narasumber seminar" <?= ($rekognisi['komponen_rekognisi'] == 'narasumber seminar') ? 'selected' : ''; ?>>Narasumber Seminar</option>
-                        <option value="peserta seminar" <?= ($rekognisi['komponen_rekognisi'] == 'peserta seminar') ? 'selected' : ''; ?>>Peserta Seminar</option>
-                        <option value="msib (studi independent)" <?= ($rekognisi['komponen_rekognisi'] == 'msib (studi independent)') ? 'selected' : ''; ?>>MSIB (Studi Independent)</option>
-                        <option value="msib (magang)" <?= ($rekognisi['komponen_rekognisi'] == 'msib (magang)') ? 'selected' : ''; ?>>MSIB (Magang)</option>
-                        <option value="pmm (pertukaran mahasiswa merdeka)" <?= ($rekognisi['komponen_rekognisi'] == 'pmm (pertukaran mahasiswa merdeka)') ? 'selected' : ''; ?>>PMM (Pertukaran Mahasiswa Merdeka)</option>
-                        <option value="membangun desa / kkn-t" <?= ($rekognisi['komponen_rekognisi'] == 'membangun desa / kkn-t') ? 'selected' : ''; ?>>Membangun Desa / KKN-T</option>
-                        <option value="hki" <?= ($rekognisi['komponen_rekognisi'] == 'hki') ? 'selected' : ''; ?>>HKI</option>
-                        <option value="publikasi jurnal sinta" <?= ($rekognisi['komponen_rekognisi'] == 'publikasi jurnal sinta') ? 'selected' : ''; ?>>Publikasi Jurnal Sinta</option>
+                        <option value="pemakalah/speaker seminar" <?= ($rekognisi['komponen_prestasi'] == 'pemakalah/speaker seminar') ? 'selected' : ''; ?>>Pemakalah/Speaker Seminar</option>
+                        <option value="narasumber seminar" <?= ($rekognisi['komponen_prestasi'] == 'narasumber seminar') ? 'selected' : ''; ?>>Narasumber Seminar</option>
+                        <option value="peserta seminar" <?= ($rekognisi['komponen_prestasi'] == 'peserta seminar') ? 'selected' : ''; ?>>Peserta Seminar</option>
+                        <option value="msib (studi independent)" <?= ($rekognisi['komponen_prestasi'] == 'msib (studi independent)') ? 'selected' : ''; ?>>MSIB (Studi Independent)</option>
+                        <option value="msib (magang)" <?= ($rekognisi['komponen_prestasi'] == 'msib (magang)') ? 'selected' : ''; ?>>MSIB (Magang)</option>
+                        <option value="pmm (pertukaran mahasiswa merdeka)" <?= ($rekognisi['komponen_prestasi'] == 'pmm (pertukaran mahasiswa merdeka)') ? 'selected' : ''; ?>>PMM (Pertukaran Mahasiswa Merdeka)</option>
+                        <option value="membangun desa / kkn-t" <?= ($rekognisi['komponen_prestasi'] == 'membangun desa / kkn-t') ? 'selected' : ''; ?>>Membangun Desa / KKN-T</option>
+                        <option value="hki" <?= ($rekognisi['komponen_prestasi'] == 'hki') ? 'selected' : ''; ?>>HKI</option>
+                        <option value="publikasi jurnal sinta" <?= ($rekognisi['komponen_prestasi'] == 'publikasi jurnal sinta') ? 'selected' : ''; ?>>Publikasi Jurnal Sinta</option>
                     </select>
                 </div>
 

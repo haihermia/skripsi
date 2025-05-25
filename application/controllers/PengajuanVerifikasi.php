@@ -8,13 +8,15 @@ class PengajuanVerifikasi extends CI_Controller
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('PengajuanVerifikasi_model');
+        $this->load->model('Prestasi_model');
     }
 
     public function index()
     {
         $data['title'] = 'Pengajuan Verifikasi';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-        $data['pengajuan'] = $this->PengajuanVerifikasi_model->get_all_pengajuan();
+        // $data['pengajuan'] = $this->PengajuanVerifikasi_model->get_all_pengajuan();
+        $data['pengajuan'] = $this->Prestasi_model->getAllPrestasi();
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
@@ -193,8 +195,24 @@ class PengajuanVerifikasi extends CI_Controller
     {
         $data['title'] = 'Pengajuan Verifikasi';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-        $id_mahasiswa = $this->session->userdata('id_user');
-        $data['pengajuan'] = $this->PengajuanVerifikasi_model->getAllPengajuanbyidmahasiswa($id_mahasiswa);
+        // $id_mahasiswa = $this->session->userdata('id_user');
+        // $data['pengajuan'] = $this->PengajuanVerifikasi_model->getAllPengajuanbyidmahasiswa($id_mahasiswa);
+
+        // Ambil data user yang login
+        $data['user'] = $this->db->get_where('user', [
+            'email' => $this->session->userdata('email')
+        ])->row_array();
+
+        // Ambil data mahasiswa berdasarkan id_user
+        $data['mahasiswa'] = $this->db->get_where('mahasiswa', [
+            'id_user' => $data['user']['id']
+        ])->row_array();
+
+        // Ambil ID mahasiswa dari tabel mahasiswa
+        $id_mahasiswa = $data['mahasiswa']['id'];
+
+        // Ambil semua prestasi berdasarkan id_mahasiswa
+        $data['pengajuan'] = $this->Prestasi_model->getAllPengajuanbyidmahasiswa($id_mahasiswa);
 
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);

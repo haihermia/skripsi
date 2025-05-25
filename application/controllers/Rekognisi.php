@@ -6,6 +6,7 @@ class Rekognisi extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('Rekognisi_model');
+		$this->load->model('Prestasi_model');
 		$this->load->library('form_validation'); // 🔹 Load form validationt
 		$this->load->helper('url'); // 🔹 Tambahkan jika perlu
 		// is_logged_in();
@@ -67,19 +68,44 @@ class Rekognisi extends CI_Controller
 			}
 		}
 
+		// $data = [
+		// 	'nim' => $this->input->post('nim'),
+		// 	'nama_rekognisi' => $this->input->post('nama_rekognisi'),
+		// 	'bidang_rekognisi' => $this->input->post('bidang_rekognisi'),
+		// 	'nama_kegiatan' => $this->input->post('nama_kegiatan'),
+		// 	'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
+		// 	'komponen_rekognisi' => $this->input->post('komponen_rekognisi'),
+		// 	'penyelenggara' => $this->input->post('penyelenggara'),
+		// 	'bukti' => $bukti,
+		// 	'jenis' => 'rekognisi',
+		// 	'id_mahasiswa' => $this->session->userdata('id_user')
+		// ];
+		$nim = $this->input->post('nim', true);
+
+		$mahasiswa = $this->db->get_where('mahasiswa', ['nim' => $nim])->row_array();
+		if (!$mahasiswa) {
+			$this->session->set_flashdata('message', '<div class="alert alert-danger">Mahasiswa dengan NIM tersebut tidak ditemukan!</div>');
+			redirect($redirect_target);
+			return;
+		}
+		$id_mahasiswa = $mahasiswa['id'];
+
 		$data = [
 			'nim' => $this->input->post('nim'),
-			'nama_rekognisi' => $this->input->post('nama_rekognisi'),
-			'bidang_rekognisi' => $this->input->post('bidang_rekognisi'),
+			'nama_prestasi' => $this->input->post('nama_rekognisi'),
+			'bidang_prestasi' => $this->input->post('bidang_rekognisi'),
 			'nama_kegiatan' => $this->input->post('nama_kegiatan'),
 			'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
-			'komponen_rekognisi' => $this->input->post('komponen_rekognisi'),
+			'komponen_prestasi' => $this->input->post('komponen_rekognisi'),
 			'penyelenggara' => $this->input->post('penyelenggara'),
 			'bukti' => $bukti,
-			'id_mahasiswa' => $this->session->userdata('id_user')
+			'jenis' => 'rekognisi',
+			'tanggal' => date('Y-m-d'),
+			'id_mahasiswa' => $id_mahasiswa
 		];
 
-		$this->Rekognisi_model->tambahRekognisi($data);
+		// $this->Rekognisi_model->tambahRekognisi($data);
+		$this->db->insert('prestasi', $data);
 		$this->session->set_flashdata('message', '<div class="alert alert-success">Data berhasil ditambahkan!</div>');
 		redirect($redirect_target);
 	}
@@ -93,7 +119,8 @@ class Rekognisi extends CI_Controller
 			'email' => $this->session->userdata('email')
 		])->row_array();
 
-		$data['rekognisi'] = $this->db->get_where('rekognisi', ['id' => $id])->row_array();
+		// $data['rekognisi'] = $this->db->get_where('rekognisi', ['id' => $id])->row_array();
+		$data['rekognisi'] = $this->db->get_where('prestasi', ['id' => $id])->row_array();
 
 		$data['komponen_rekognisi'] = [/* ... array komponen seperti sebelumnya ... */];
 
@@ -131,17 +158,17 @@ class Rekognisi extends CI_Controller
 			}
 
 			$updateData = [
-				'nama_rekognisi' => $this->input->post('nama_rekognisi'),
-				'bidang_rekognisi' => $this->input->post('bidang_rekognisi'),
+				'nama_prestasi' => $this->input->post('nama_rekognisi'),
+				'bidang_prestasi' => $this->input->post('bidang_rekognisi'),
 				'nama_kegiatan' => $this->input->post('nama_kegiatan'),
 				'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
-				'komponen_rekognisi' => $this->input->post('komponen_rekognisi'),
+				'komponen_prestasi' => $this->input->post('komponen_rekognisi'),
 				'penyelenggara' => $this->input->post('penyelenggara'),
 				'bukti' => $bukti
 			];
 
 			$this->db->where('id', $id);
-			$this->db->update('rekognisi', $updateData);
+			$this->db->update('prestasi', $updateData);
 
 			$this->session->set_flashdata('message', '<div class="alert alert-success">Data rekognisi berhasil diubah!</div>');
 
@@ -170,19 +197,36 @@ class Rekognisi extends CI_Controller
 	public function getrekognisibyidmahasiswa()
 	{
 		$data['title'] = 'Data Rekognisi';
-		$id_mahasiswa = $this->session->userdata('id_user');
-
-		// Ambil data user berdasarkan session email
+		// Ambil data user yang login
 		$data['user'] = $this->db->get_where('user', [
 			'email' => $this->session->userdata('email')
 		])->row_array();
 
+		// Ambil data mahasiswa berdasarkan id_user
 		$data['mahasiswa'] = $this->db->get_where('mahasiswa', [
 			'id_user' => $data['user']['id']
 		])->row_array();
 
+		// Ambil ID mahasiswa dari tabel mahasiswa
+		$id_mahasiswa = $data['mahasiswa']['id'];
+
+		// Ambil semua prestasi berdasarkan id_mahasiswa
+		// $data['prestasi'] = $this->Prestasi_model->getAllPrestasibyidmahasiswa($id_mahasiswa);
+
+		// $id_mahasiswa = $this->session->userdata('id_user');
+
+		// // Ambil data user berdasarkan session email
+		// $data['user'] = $this->db->get_where('user', [
+		// 	'email' => $this->session->userdata('email')
+		// ])->row_array();
+
+		// $data['mahasiswa'] = $this->db->get_where('mahasiswa', [
+		// 	'id_user' => $data['user']['id']
+		// ])->row_array();
+
 		// Ambil data rekognisi dari model
-		$data['rekognisi'] = $this->Rekognisi_model->getAllrekognisibyidmahasiswa($id_mahasiswa);
+		// $data['rekognisi'] = $this->Rekognisi_model->getAllrekognisibyidmahasiswa($id_mahasiswa);
+		$data['rekognisi'] = $this->Prestasi_model->getAllRekognisibyidmahasiswa($id_mahasiswa);
 
 		//Pastikan semua view dipanggil berurutan
 		$this->load->view('templates/header', $data);

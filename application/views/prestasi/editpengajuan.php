@@ -7,12 +7,19 @@
     <!-- Notifikasi (jika ada) -->
     <?= $this->session->flashdata('message'); ?>
 
+    <!-- Menampilkan error validasi form -->
+    <?php if (validation_errors()): ?>
+        <div class="alert alert-danger">
+            <?= validation_errors(); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <!-- Tombol Tambah Data -->
-            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#tambahRekognisiModal">
-                Tambah Data Rekognisi
+            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#tambahPrestasiModal">
+                Tambah Data Prestasi
             </button>
         </div>
         <div class="card-body">
@@ -22,11 +29,11 @@
                         <tr>
                             <th>No</th>
                             <th>NIM</th>
-                            <th>Nama Rekognisi</th>
-                            <th>Bidang Rekognisi</th>
+                            <th>Nama Prestasi</th>
+                            <th>Bidang Prestasi</th>
                             <th>Nama Kegiatan</th>
                             <th>Tanggal Kegiatan</th>
-                            <th>Komponen Rekognisi</th>
+                            <th>Komponen Prestasi</th>
                             <th>Penyelenggara</th>
                             <th>Bukti</th>
                             <th>Aksi</th>
@@ -34,7 +41,7 @@
                     </thead>
                     <tbody>
                         <?php $no = 1; ?>
-                        <?php foreach ($rekognisi as $p) : ?>
+                        <?php foreach ($prestasi as $p) : ?>
                             <tr>
                                 <td><?= $no++; ?></td>
                                 <td><?= $p['nim']; ?></td>
@@ -48,10 +55,10 @@
 
                                 <td style="white-space: nowrap; text-align: center;">
                                     <div class="btn-group">
-                                        <a href="<?= base_url('rekognisi/editRekognisi/') . $p['id']; ?>" class="btn btn-sm btn-primary">
+                                        <a href="<?= base_url('prestasi/editPrestasi/') . $p['id']; ?>" class="btn btn-sm btn-primary">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <a href="<?= base_url('rekognisi/hapusRekognisi/') . $p['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?');">
+                                        <a href="<?= base_url('prestasi/hapusPrestasi/') . $p['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?');">
                                             <i class="fas fa-trash"></i> Hapus
                                         </a>
                                     </div>
@@ -59,6 +66,7 @@
 
                             </tr>
                         <?php endforeach; ?>
+
                     </tbody>
                 </table>
             </div>
@@ -69,16 +77,16 @@
 <!-- /.container-fluid -->
 
 <!-- Modal Tambah Data -->
-<div class="modal fade" id="tambahRekognisiModal" tabindex="-1" aria-labelledby="tambahRekognisiLabel" aria-hidden="true">
+<div class="modal fade" id="tambahPrestasiModal" tabindex="-1" aria-labelledby="tambahPrestasiLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahRekognisiLabel">Tambah Data Rekognisi</h5>
+                <h5 class="modal-title" id="tambahPrestasiLabel">Tambah Data Prestasi</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('rekognisi/tambah'); ?>" method="POST" enctype="multipart/form-data">
+            <form action="<?= site_url('prestasi/tambah'); ?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nim">NIM</label>
@@ -86,15 +94,14 @@
                         <input type="number" class="form-control" id="nim_display" value="<?= $mahasiswa['nim'] ?>" readonly>
                         <!-- Hidden input untuk dikirimkan ke controller -->
                         <input type="hidden" name="nim" value="<?= $mahasiswa['nim'] ?>">
-
                     </div>
                     <div class="form-group">
-                        <label for="nama_rekognisi">Nama Rekognisi</label>
-                        <input type="text" class="form-control" id="nama_rekognisi" name="nama_rekognisi" required>
+                        <label for="nama_prestasi">Nama Prestasi</label>
+                        <input type="text" class="form-control" id="nama_prestasi" name="nama_prestasi" required>
                     </div>
                     <div class="form-group">
-                        <label for="bidang_rekognisi">Bidang Rekognisi</label>
-                        <input type="text" class="form-control" id="bidang_rekognisi" name="bidang_rekognisi" required>
+                        <label for="bidang_prestasi">Bidang Prestasi</label>
+                        <input type="text" class="form-control" id="bidang_prestasi" name="bidang_prestasi" required>
                     </div>
                     <div class="form-group">
                         <label for="nama_kegiatan">Nama Kegiatan</label>
@@ -102,21 +109,19 @@
                     </div>
                     <div class="form-group">
                         <label for="tanggal_kegiatan">Tanggal Kegiatan</label>
-                        <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" required>
+                        <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" value="<?= date('Y-m-d') ?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="komponen_rekognisi">Komponen Rekognisi</label>
-                        <select class="form-control" id="komponen_rekognisi" name="komponen_rekognisi" required>
-                            <option value="">-- Pilih Komponen Rekognisi --</option>
-                            <option value="pemakalah/speaker seminar">Pemakalah/Speaker Seminar</option>
-                            <option value="narasumber seminar">Narasumber Seminar</option>
-                            <option value="peserta seminar">Peserta Seminar</option>
-                            <option value="msib (studi independent)">MSIB (Studi Independent)</option>
-                            <option value="msib (magang)">MSIB (Magang)</option>
-                            <option value="pmm (pertukaran mahasiswa merdeka)">PMM (Pertukaran Mahasiswa Merdeka)</option>
-                            <option value="membangun desa / kkn-t">Membangun Desa / KKN-T</option>
-                            <option value="hki">HKI</option>
-                            <option value="publikasi jurnal sinta">Publikasi Jurnal Sinta</option>
+                        <label for="komponen_prestasi">Komponen Prestasi</label>
+                        <select class="form-control" id="komponen_prestasi" name="komponen_prestasi" required>
+                            <option value="">-- Pilih Komponen Prestasi --</option>
+                            <option value="Juara Umum">Juara Umum</option>
+                            <option value="Juara 1 (Nasional)">Juara 1 (Nasional)</option>
+                            <option value="Juara 2 (Nasional)">Juara 2 (Nasional)</option>
+                            <option value="Juara 3 (Nasional)">Juara 3 (Nasional)</option>
+                            <option value="Juara Harapan 1 (Nasional)">Juara Harapan 1 (Nasional)</option>
+                            <option value="Juara Harapan 2 (Nasional)">Juara Harapan 2 (Nasional)</option>
+                            <option value="Juara Harapan 3 (Nasional)">Juara Harapan 3 (Nasional)</option>
                         </select>
                     </div>
                     <div class="form-group">

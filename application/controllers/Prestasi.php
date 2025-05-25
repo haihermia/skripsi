@@ -87,6 +87,8 @@ class Prestasi extends CI_Controller
             'komponen_prestasi' => $komponen_prestasi,
             'penyelenggara' => $penyelenggara,
             'bukti' => $bukti,
+            'jenis' => 'prestasi',
+            'tanggal' => date('Y-m-d'),
             'id_mahasiswa' => $id_mahasiswa
         ];
 
@@ -161,6 +163,77 @@ class Prestasi extends CI_Controller
                 redirect('prestasi/getprestasibyidmahasiswa');
             } else {
                 redirect('prestasi');
+            }
+        }
+    }
+
+
+    public function verifikasiPengajuan($id)
+    {
+        $data['title'] = 'Edit Verifikasi';
+        $data['user'] = $this->db->get_where('user', [
+            'email' => $this->session->userdata('email')
+        ])->row_array();
+        $data['prestasi'] = $this->db->get_where('prestasi', ['id' => $id])->row_array();
+        $data['komponen_prestasi'] = ['Juara Umum', 'Juara 1 (Nasional)', 'Juara 2 (Nasional)', 'Juara 3 (Nasional)', 'Juara Harapan 1 (Nasional)', 'Juara Harapan 2 (Nasional)', 'Juara Harapan 3 (Nasional)'];
+
+        $this->form_validation->set_rules('nama_prestasi', 'Nama Prestasi', 'required');
+        $this->form_validation->set_rules('bidang_prestasi', 'Bidang Prestasi', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('prestasi/editverifikasi', $data);
+            $this->load->view('templates/footer');
+        } else {
+            // Konfigurasi upload gambar
+            $config['upload_path'] = './uploads/bukti/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp|pdf';
+            $config['max_size'] = 6000;
+            $config['file_name'] = time();
+
+            $this->upload->initialize($config);
+            $bukti_lama = $data['prestasi']['bukti'];
+            $bukti_baru = $bukti_lama;
+
+            if (!empty($_FILES['bukti']['name'])) {
+                if ($this->upload->do_upload('bukti')) {
+                    $upload_data = $this->upload->data();
+                    $bukti_baru = $upload_data['file_name'];
+                    // Hapus file lama jika ada
+                    if ($bukti_lama && file_exists('./uploads/bukti/' . $bukti_lama)) {
+                        unlink('./uploads/bukti/' . $bukti_lama);
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger">' . $this->upload->display_errors() . '</div>');
+                    redirect('prestasi/editPrestasi/' . $id);
+                }
+            }
+
+            $updateData = [
+                // 'nama_prestasi' => $this->input->post('nama_prestasi'),
+                // 'bidang_prestasi' => $this->input->post('bidang_prestasi'),
+                // 'nama_kegiatan' => $this->input->post('nama_kegiatan'),
+                // 'tanggal_kegiatan' => $this->input->post('tanggal_kegiatan'),
+                // 'komponen_prestasi' => $this->input->post('komponen_prestasi'),
+                // 'penyelenggara' => $this->input->post('penyelenggara'),
+                // 'bukti' => $bukti_baru
+                'status' => $this->input->post('status'),
+                'catatan' => $this->input->post('catatan'),
+                'tanggal_verifikasi' => date('Y-m-d')
+            ];
+
+            $this->db->where('id', $id);
+            $this->db->update('prestasi', $updateData);
+
+            $this->session->set_flashdata('message', '<div class="alert alert-success">Data prestasi berhasil diubah!</div>');
+
+            // Redirect sesuai role
+            if ($data['user']['role_id'] == 2) {
+                redirect('prestasi/editpengajuan');
+            } else {
+                redirect('pengajuanverifikasi');
             }
         }
     }

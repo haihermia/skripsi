@@ -28,6 +28,21 @@ class Prestasi_model extends CI_Model
 
     public function getAllPrestasibyidmahasiswa($id)
     {
-        return $this->db->get_where('prestasi', ['id_mahasiswa' => $id])->result_array();
+        $this->db->where('id_mahasiswa', $id);
+        $this->db->where('jenis', 'prestasi');
+        return $this->db->get('prestasi')->result_array();
+    }
+
+    public function getAllRekognisibyidmahasiswa($id)
+    {
+        $this->db->where('id_mahasiswa', $id);
+        $this->db->where('jenis', 'rekognisi');
+        return $this->db->get('prestasi')->result_array();
+    }
+
+    public function getAllPengajuanbyidmahasiswa($id)
+    {
+        $this->db->where('id_mahasiswa', $id);
+        return $this->db->get('prestasi')->result_array();
     }
 }

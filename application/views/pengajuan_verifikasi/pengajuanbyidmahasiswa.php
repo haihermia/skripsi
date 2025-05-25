@@ -31,7 +31,7 @@
                             <th>Tanggal Pengajuan</th>
                             <th>Catatan</th>
                             <th>Tanggal Verifikasi</th>
-                            <th>Aksi</th>
+                            <!-- <th>Aksi</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -40,13 +40,19 @@
                             <?php foreach ($pengajuan as $p) : ?>
                                 <tr>
                                     <td><?= $no++; ?></td>
-                                    <td><?= $p['nama']; ?></td>
-                                    <td><?= $p['email']; ?></td>
-                                    <td><?= $p['jenis_pengajuan']; ?></td>
-                                    <td><a href="<?= base_url() . 'uploads/bukti/' . $p['dokumen']; ?>">Lihat</a></td>
+                                    <td><?= $p['nama_prestasi']; ?></td>
+                                    <td><?= $p['nim']; ?></td>
                                     <td>
-                                        <?php if ($p['status'] == 'pending'): ?>
-                                            <span class="badge badge-warning">Pending</span>
+                                        <?php if ($p['jenis'] == 'prestasi'): ?>
+                                            <span class="badge badge-primary">Prestasi</span>
+                                        <?php elseif ($p['jenis'] == 'rekognisi'): ?>
+                                            <span class="badge badge-success">Rekognisi</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><a href="<?= base_url() . 'uploads/bukti/' . $p['bukti']; ?>">Lihat</a></td>
+                                    <td>
+                                        <?php if ($p['status'] == 'diajukan'): ?>
+                                            <span class="badge badge-warning">Diajukan</span>
                                         <?php elseif ($p['status'] == 'diterima'): ?>
                                             <span class="badge badge-success">Diterima</span>
                                         <?php elseif ($p['status'] == 'ditolak'): ?>
@@ -55,7 +61,7 @@
                                             <span class="badge badge-secondary"><?= $p['status']; ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?= $p['tanggal_pengajuan']; ?></td>
+                                    <td><?= $p['tanggal']; ?></td>
                                     <td>
                                         <?php if (!empty($p['catatan'])): ?>
                                             <?= $p['catatan']; ?>
@@ -71,7 +77,7 @@
                                         <?php endif; ?>
                                     </td>
 
-                                    <td style="white-space: nowrap; text-align: center;">
+                                    <!-- <td style="white-space: nowrap; text-align: center;">
                                         <div class="btn-group">
                                             <?php if ($p['status'] == 'diterima' || $p['status'] == 'ditolak'): ?>
                                                 <button class="btn btn-sm btn-primary"
@@ -97,7 +103,7 @@
                                             <?php endif ?>
                                         </div>
 
-                                    </td>
+                                    </td> -->
                                 </tr>
                             <?php endforeach; ?>
                         <?php else : ?>
